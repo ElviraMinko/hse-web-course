@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Настроить CI для автотестов — Спринт</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Unbounded:wght@500;600&amp;display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="page page-role-admin page-flow task-page">
+  <svg class="visually-hidden" aria-hidden="true">
+    <symbol id="logo" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+    <symbol id="board" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></symbol>
+    <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="team" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="back" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+    <symbol id="edit" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></symbol>
+    <symbol id="send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4ZM22 2 11 13"/></symbol>
+  </svg>
+
+  <div class="app">
+    <aside class="app-sidebar">
+      <a class="app-logo" href="index.html">
+        <span class="app-logo-mark"><svg class="icon" aria-hidden="true"><use href="#logo"/></svg></span>
+        <span class="app-logo-name">Спринт</span>
+      </a>
+
+      <nav class="app-nav" aria-label="Основная навигация">
+        <ul class="app-nav-list">
+          <li>
+            <a class="app-nav-link app-nav-link-current" href="index.html" aria-current="page">
+              <svg class="icon" aria-hidden="true"><use href="#board"/></svg>
+              <span class="app-nav-label">Доска</span>
+            </a>
+          </li>
+          <li>
+            <a class="app-nav-link app-nav-link-create" href="task-new.html">
+              <svg class="icon" aria-hidden="true"><use href="#plus"/></svg>
+              <span class="app-nav-label">Новая задача</span>
+              <span class="app-nav-label-short">Создать</span>
+            </a>
+          </li>
+          <li>
+            <a class="app-nav-link" href="team.html">
+              <svg class="icon" aria-hidden="true"><use href="#team"/></svg>
+              <span class="app-nav-label">Команда</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <section class="sprint-summary">
+        <h2 class="sprint-summary-caption">Текущий спринт</h2>
+        <p class="sprint-summary-name">Спринт 14</p>
+        <p class="sprint-summary-dates">15 — 28 сентября</p>
+      </section>
+
+      <div class="current-user">
+        <span class="avatar avatar-large avatar-anya">АК</span>
+        <p class="current-user-info">
+          <span class="current-user-name">Аня Ковалёва</span>
+          <span class="current-user-role">Администратор</span>
+        </p>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      <header class="page-header page-header-flow task-topbar">
+        <a class="icon-button page-header-back" href="index.html" aria-label="Назад к доске"><svg class="icon" aria-hidden="true"><use href="#back"/></svg></a>
+        <p class="page-header-heading task-topbar-code">SPR-41</p>
+        <a class="icon-button page-header-mobile-action" href="task-new.html" aria-label="Редактировать"><svg class="icon" aria-hidden="true"><use href="#edit"/></svg></a>
+      </header>
+
+      <header class="page-header task-header">
+        <div class="page-header-heading">
+          <nav class="breadcrumbs" aria-label="Навигационная цепочка">
+            <ol class="breadcrumbs-list">
+              <li class="breadcrumbs-item"><a class="breadcrumbs-link" href="index.html">Доска</a></li>
+              <li class="breadcrumbs-item" aria-current="page">SPR-41</li>
+            </ol>
+          </nav>
+          <h1 class="page-title">Настроить CI для автотестов</h1>
+          <p class="task-header-labels">
+            <span class="priority-badge priority-badge-high priority-badge-large">Высокий<span class="task-header-priority-suffix">приоритет</span></span>
+            <span class="task-tag task-tag-large">Инфра</span>
+            <span class="task-header-created">Создана <time datetime="2026-09-16">16 сентября</time></span>
+          </p>
+        </div>
+        <div class="task-header-actions">
+          <select class="input select task-status task-status-progress" aria-label="Статус задачи">
+            <option value="backlog">Бэклог</option>
+            <option value="progress" selected>В работе</option>
+            <option value="review">На ревью</option>
+            <option value="done">Готово</option>
+          </select>
+          <a class="button button-secondary task-header-edit" href="task-new.html"><svg class="icon icon-sm" aria-hidden="true"><use href="#edit"/></svg> Редактировать</a>
+        </div>
+      </header>
+
+      <div class="task-layout">
+        <section class="panel task-layout-description">
+          <h2 class="panel-title">Описание</h2>
+          <p class="task-description-text">Нужен пайплайн, который запускает тесты на каждый merge request и не даёт влить ветку с упавшими тестами. Результат прогона должен быть виден прямо в карточке MR.</p>
+        </section>
+
+        <section class="panel task-layout-comments">
+          <h2 class="panel-title">Комментарии <span class="panel-title-count">· 2</span></h2>
+          <ol class="comment-list">
+            <li class="comment">
+              <span class="avatar avatar-large avatar-misha">МО</span>
+              <div class="comment-body">
+                <p class="comment-meta">
+                  <span class="comment-author">Миша Орлов</span>
+                  <time class="comment-time" datetime="2026-09-22T18:40">вчера, 18:40</time>
+                </p>
+                <p class="comment-text">Могу помочь с раннером — у нас есть свободная машина под сборки.</p>
+              </div>
+            </li>
+            <li class="comment">
+              <span class="avatar avatar-large avatar-lev">ЛГ</span>
+              <div class="comment-body">
+                <p class="comment-meta">
+                  <span class="comment-author">Лёва Гринберг</span>
+                  <time class="comment-time" datetime="2026-09-23T10:15">сегодня, 10:15</time>
+                </p>
+                <p class="comment-text">Проверил на своей ветке: с кэшем сборка заметно быстрее. Оставляем.</p>
+              </div>
+            </li>
+          </ol>
+          <form class="comment-form">
+            <span class="avatar avatar-large avatar-anya comment-form-avatar">АК</span>
+            <div class="comment-form-fields">
+              <textarea class="input input-multiline" rows="2" required placeholder="Напишите комментарий — Enter отправляет, Shift+Enter переносит строку" aria-label="Новый комментарий"></textarea>
+              <button class="button button-primary comment-form-submit">
+                <span class="comment-form-submit-text">Отправить</span>
+                <svg class="icon" aria-hidden="true"><use href="#send"/></svg>
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel task-layout-meta">
+          <h2 class="panel-title">Детали</h2>
+          <dl class="task-meta">
+            <div class="task-meta-item task-meta-item-status">
+              <dt class="task-meta-term">Статус</dt>
+              <dd class="task-meta-value"><span class="status-dot status-dot-progress"></span> В работе</dd>
+            </div>
+            <div class="task-meta-item task-meta-item-assignee">
+              <dt class="task-meta-term">Исполнитель</dt>
+              <dd class="task-meta-value">
+                <a class="task-meta-person" href="team.html">
+                  <span class="avatar avatar-anya task-meta-avatar">АК</span>
+                  <span class="task-meta-name">Аня Ковалёва</span>
+                  <span class="task-meta-name-short">Аня К.</span>
+                </a>
+              </dd>
+            </div>
+            <div class="task-meta-item task-meta-item-author">
+              <dt class="task-meta-term">Автор</dt>
+              <dd class="task-meta-value">Миша Орлов</dd>
+            </div>
+            <div class="task-meta-item task-meta-item-due">
+              <dt class="task-meta-term">Дедлайн</dt>
+              <dd class="task-meta-value"><time datetime="2026-09-26">26 сентября</time></dd>
+            </div>
+            <div class="task-meta-item task-meta-item-created">
+              <dt class="task-meta-term">Создана</dt>
+              <dd class="task-meta-value"><time datetime="2026-09-16">16 сентября</time></dd>
+            </div>
+            <div class="task-meta-item task-meta-item-priority">
+              <dt class="task-meta-term">Приоритет</dt>
+              <dd class="task-meta-value"><span class="priority-badge priority-badge-high priority-badge-large">Высокий</span></dd>
+            </div>
+            <div class="task-meta-item task-meta-item-tags">
+              <dt class="task-meta-term">Теги</dt>
+              <dd class="task-meta-value"><span class="task-tag task-tag-large">Инфра</span></dd>
+            </div>
+          </dl>
+        </section>
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>
