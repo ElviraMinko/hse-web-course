@@ -1,0 +1,13 @@
+{
+  "name": "hse-web-course",
+  "version": "1.0.0",
+  "description": "Спринт — таск-трекер для небольшой команды",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20.11"
+  }
+}

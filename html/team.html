@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Команда — Спринт</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Unbounded:wght@500;600&amp;display=swap">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script type="module" src="../js/main.js"></script>
+</head>
+<body class="page page-role-admin team-page" data-page="team">
+  <svg class="visually-hidden" aria-hidden="true">
+    <symbol id="logo" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+    <symbol id="board" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></symbol>
+    <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="team" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="invite" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></symbol>
+    <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="delete" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></symbol>
+  </svg>
+
+  <div class="app">
+    <aside class="app-sidebar">
+      <a class="app-logo" href="index.html">
+        <span class="app-logo-mark"><svg class="icon" aria-hidden="true"><use href="#logo"/></svg></span>
+        <span class="app-logo-name">Спринт</span>
+      </a>
+
+      <nav class="app-nav" aria-label="Основная навигация">
+        <ul class="app-nav-list">
+          <li>
+            <a class="app-nav-link" href="index.html">
+              <svg class="icon" aria-hidden="true"><use href="#board"/></svg>
+              <span class="app-nav-label">Доска</span>
+            </a>
+          </li>
+          <li>
+            <a class="app-nav-link app-nav-link-create" href="task-new.html">
+              <svg class="icon" aria-hidden="true"><use href="#plus"/></svg>
+              <span class="app-nav-label">Новая задача</span>
+              <span class="app-nav-label-short">Создать</span>
+            </a>
+          </li>
+          <li>
+            <a class="app-nav-link app-nav-link-current" href="team.html" aria-current="page">
+              <svg class="icon" aria-hidden="true"><use href="#team"/></svg>
+              <span class="app-nav-label">Команда</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <section class="sprint-summary">
+        <h2 class="sprint-summary-caption">Текущий спринт</h2>
+        <p class="sprint-summary-name">Спринт 14</p>
+        <p class="sprint-summary-dates" id="sprint-dates"></p>
+      </section>
+
+      <div class="current-user" id="current-user"></div>
+    </aside>
+
+    <main class="app-main">
+      <header class="page-header team-header">
+        <div class="page-header-heading">
+          <p class="page-header-subtitle">Роли и доступ к проекту</p>
+          <h1 class="page-title">Команда</h1>
+          <p class="team-header-summary" id="team-summary"></p>
+        </div>
+        <a class="button button-primary team-header-invite" id="team-invite-open" href="#invite-dialog">
+          <svg class="icon icon-md" aria-hidden="true"><use href="#invite"/></svg>
+          <span class="team-header-invite-label">Пригласить участника</span>
+        </a>
+      </header>
+
+      <dl class="team-stats">
+        <div class="team-stats-item"><dt class="team-stats-term">Участников</dt><dd class="team-stats-value" id="team-stat-members"></dd></div>
+        <div class="team-stats-item"><dt class="team-stats-term">Администраторов</dt><dd class="team-stats-value" id="team-stat-admins"></dd></div>
+        <div class="team-stats-item"><dt class="team-stats-term">Задач в работе у команды</dt><dd class="team-stats-value" id="team-stat-active"></dd></div>
+      </dl>
+
+      <div class="team-toolbar">
+        <form class="board-search" id="team-search" role="search">
+          <svg class="icon icon-md board-search-icon" aria-hidden="true"><use href="#search"/></svg>
+          <input class="input board-search-input" id="team-search-input" type="search" placeholder="Имя или email" aria-label="Поиск участников">
+        </form>
+        <fieldset class="filter-chips" id="team-filter">
+          <legend class="visually-hidden">Фильтр по роли</legend>
+          <label class="filter-chips-option"><input class="visually-hidden" type="radio" name="role" value="all" checked> Все</label>
+          <label class="filter-chips-option"><input class="visually-hidden" type="radio" name="role" value="admin"> Администраторы</label>
+          <label class="filter-chips-option"><input class="visually-hidden" type="radio" name="role" value="member"> Участники</label>
+          <label class="filter-chips-option"><input class="visually-hidden" type="radio" name="role" value="viewer"> Наблюдатели</label>
+        </fieldset>
+      </div>
+
+      <section class="team-list" aria-label="Список участников">
+        <table class="team-table">
+          <thead class="team-table-head">
+            <tr>
+              <th class="team-table-heading" scope="col" data-sort-column="name"><button class="team-table-sort" type="button" data-sort="name"><span class="team-table-label">Участник</span><span class="team-table-label-short">Имя</span><span class="team-table-sort-icon" aria-hidden="true">↕</span></button></th>
+              <th class="team-table-heading team-table-heading-role" scope="col">Роль</th>
+              <th class="team-table-heading team-table-heading-tasks" scope="col" data-sort-column="tasks"><button class="team-table-sort" type="button" data-sort="tasks">Задачи<span class="team-table-sort-icon" aria-hidden="true">↕</span></button></th>
+              <th class="team-table-heading team-table-heading-activity" scope="col">Активность</th>
+              <th class="team-table-heading team-table-heading-actions" scope="col"><span class="visually-hidden">Действия</span></th>
+            </tr>
+          </thead>
+          <tbody class="team-table-body" id="team-members"></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <dialog class="modal invite-dialog" id="invite-dialog" aria-labelledby="invite-title">
+    <a class="modal-backdrop" href="#" tabindex="-1" aria-hidden="true" data-close-dialog></a>
+    <div class="modal-panel">
+      <span class="modal-handle"></span>
+      <header class="modal-header">
+        <h2 class="modal-title" id="invite-title">Пригласить в команду</h2>
+        <a class="icon-button" href="#" aria-label="Закрыть" data-close-dialog><svg class="icon icon-md" aria-hidden="true"><use href="#close"/></svg></a>
+      </header>
+      <p class="modal-description">Отправим письмо со ссылкой для присоединения к проекту.</p>
+      <form class="invite-form" id="invite-form" action="team.html" novalidate>
+        <div class="form-field">
+          <label class="form-field-label" for="invite-name">Имя</label>
+          <input class="input" id="invite-name" name="name" required minlength="2" autocomplete="name" placeholder="Например, Оля Смирнова" aria-describedby="invite-name-error" autofocus>
+          <p class="form-field-error" id="invite-name-error">Введите имя — хотя бы 2 символа</p>
+        </div>
+        <div class="form-field">
+          <label class="form-field-label" for="invite-email">Email</label>
+          <input class="input" id="invite-email" name="email" type="email" required autocomplete="email" placeholder="name@company.ru" aria-describedby="invite-email-error">
+          <p class="form-field-error" id="invite-email-error">Похоже, в адресе опечатка</p>
+        </div>
+        <div class="modal-actions">
+          <a class="button button-secondary" href="#" data-close-dialog>Отмена</a>
+          <button class="button button-primary">Отправить приглашение</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+</body>
+</html>

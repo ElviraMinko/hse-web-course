@@ -7,9 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Unbounded:wght@500;600&amp;display=swap">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script type="module" src="../js/main.js"></script>
 </head>
-<body class="page page-role-admin page-flow form-page">
+<body class="page page-role-admin page-flow form-page" data-page="task-form">
   <svg class="visually-hidden" aria-hidden="true">
     <symbol id="logo" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
     <symbol id="board" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></symbol>
@@ -53,42 +54,36 @@
       <section class="sprint-summary">
         <h2 class="sprint-summary-caption">Текущий спринт</h2>
         <p class="sprint-summary-name">Спринт 14</p>
-        <p class="sprint-summary-dates">15 — 28 сентября</p>
+        <p class="sprint-summary-dates" id="sprint-dates"></p>
       </section>
 
-      <div class="current-user">
-        <span class="avatar avatar-large avatar-anya">АК</span>
-        <p class="current-user-info">
-          <span class="current-user-name">Аня Ковалёва</span>
-          <span class="current-user-role">Администратор</span>
-        </p>
-      </div>
+      <div class="current-user" id="current-user"></div>
     </aside>
 
     <main class="app-main">
       <header class="page-header page-header-flow">
-        <a class="icon-button page-header-back" href="index.html" aria-label="Закрыть"><svg class="icon" aria-hidden="true"><use href="#close"/></svg></a>
+        <a class="icon-button page-header-back" id="form-back" href="index.html" aria-label="Закрыть"><svg class="icon" aria-hidden="true"><use href="#close"/></svg></a>
         <div class="page-header-heading">
           <nav class="breadcrumbs" aria-label="Навигационная цепочка">
-            <ol class="breadcrumbs-list">
+            <ol class="breadcrumbs-list" id="form-breadcrumbs">
               <li class="breadcrumbs-item"><a class="breadcrumbs-link" href="index.html">Доска</a></li>
               <li class="breadcrumbs-item" aria-current="page">Новая задача</li>
             </ol>
           </nav>
-          <h1 class="page-title">Новая задача</h1>
+          <h1 class="page-title" id="form-heading">Новая задача</h1>
         </div>
-        <button class="button button-text page-header-mobile-action" type="reset" form="task-form">Очистить</button>
+        <button class="button button-text page-header-mobile-action" id="form-reset-mobile" type="reset" form="task-form">Очистить</button>
       </header>
 
       <div class="task-editor">
-        <form class="task-form" id="task-form" action="index.html">
+        <form class="task-form" id="task-form" action="index.html" novalidate>
           <div class="form-field">
             <div class="form-field-head">
               <label class="form-field-label" for="title">Название <span class="form-field-required">*</span></label>
-              <span class="form-field-hint">0 / 80</span>
+              <span class="form-field-hint" id="title-counter">0 / 80</span>
             </div>
-            <input class="input" id="title" name="title" required minlength="3" maxlength="80" placeholder="Например, «Сверстать экран команды»">
-            <p class="form-field-error">Добавьте название — от 3 до 80 символов</p>
+            <input class="input" id="title" name="title" required minlength="3" maxlength="80" placeholder="Например, «Сверстать экран команды»" aria-describedby="title-error">
+            <p class="form-field-error" id="title-error">Добавьте название — от 3 до 80 символов</p>
           </div>
 
           <div class="form-field">
@@ -134,61 +129,39 @@
               <label class="form-field-label" for="assignee">Исполнитель</label>
               <select class="input select" id="assignee" name="assignee">
                 <option value="" selected>Выберите участника</option>
-                <option value="anya">Аня Ковалёва</option>
-                <option value="misha">Миша Орлов</option>
-                <option value="lev">Лёва Гринберг</option>
-                <option value="katya">Катя Петрова</option>
-                <option value="dima">Дима Соколов</option>
               </select>
             </div>
 
             <div class="form-field">
               <label class="form-field-label" for="due">Дедлайн</label>
-              <input class="input" id="due" name="due" type="date" min="2026-09-23">
-              <p class="form-field-error">Дедлайн не может быть в прошлом</p>
+              <input class="input" id="due" name="due" type="date" aria-describedby="due-error">
+              <p class="form-field-error" id="due-error">Дедлайн не может быть в прошлом</p>
             </div>
           </div>
 
           <fieldset class="tag-picker">
             <legend class="form-field-label">Теги</legend>
-            <div class="tag-picker-options">
-              <label class="tag-picker-option"><input class="visually-hidden" type="checkbox" name="tags" value="Фронтенд"> Фронтенд</label>
-              <label class="tag-picker-option"><input class="visually-hidden" type="checkbox" name="tags" value="Дизайн"> Дизайн</label>
-              <label class="tag-picker-option"><input class="visually-hidden" type="checkbox" name="tags" value="Инфра"> Инфра</label>
-              <label class="tag-picker-option"><input class="visually-hidden" type="checkbox" name="tags" value="Баг"> Баг</label>
-              <label class="tag-picker-option"><input class="visually-hidden" type="checkbox" name="tags" value="Фича"> Фича</label>
-              <label class="tag-picker-option"><input class="visually-hidden" type="checkbox" name="tags" value="Документация"> Документация</label>
-            </div>
+            <div class="tag-picker-options" id="tag-options"></div>
             <div class="tag-picker-new">
-              <input class="input" placeholder="Новый тег" aria-label="Новый тег">
-              <button class="button button-secondary" type="button">Добавить</button>
+              <input class="input" id="new-tag-input" maxlength="24" placeholder="Новый тег" aria-label="Новый тег">
+              <button class="button button-secondary" id="new-tag-button" type="button">Добавить</button>
             </div>
           </fieldset>
 
           <div class="task-form-actions">
-            <button class="button button-secondary task-form-reset" type="reset">Очистить</button>
-            <a class="button button-secondary task-form-cancel" href="index.html">Отмена</a>
-            <button class="button button-primary task-form-submit">Создать задачу</button>
+            <button class="button button-secondary task-form-reset" id="form-reset" type="reset">Очистить</button>
+            <a class="button button-secondary task-form-cancel" id="form-cancel" href="index.html">Отмена</a>
+            <button class="button button-primary task-form-submit" id="form-submit">Создать задачу</button>
           </div>
         </form>
 
         <aside class="task-preview">
           <h2 class="task-preview-caption">Так задача появится на доске</h2>
-          <article class="task-card task-preview-card">
-            <ul class="task-card-labels">
-              <li class="priority-badge priority-badge-medium">Средний</li>
-            </ul>
-            <h3 class="task-card-title task-preview-title-empty">Название задачи</h3>
-            <footer class="task-card-footer">
-              <span class="task-card-due"><svg class="icon icon-sm" aria-hidden="true"><use href="#calendar"/></svg>Без срока</span>
-              <span class="avatar avatar-unassigned task-card-assignee" title="Не назначен">—</span>
-            </footer>
-          </article>
-          <p class="task-preview-column"><span class="status-dot status-dot-backlog"></span> Колонка «Бэклог»</p>
+          <article class="task-card task-preview-card" id="task-preview-card"></article>
+          <p class="task-preview-column" id="task-preview-column"></p>
         </aside>
       </div>
     </main>
   </div>
-
 </body>
 </html>
