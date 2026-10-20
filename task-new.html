@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Новая задача — Спринт</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Unbounded:wght@500;600&amp;display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="page page-role-admin page-flow form-page">
+  <svg class="visually-hidden" aria-hidden="true">
+    <symbol id="logo" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+    <symbol id="board" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></symbol>
+    <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="team" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+    <symbol id="close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  </svg>
+
+  <div class="app">
+    <aside class="app-sidebar">
+      <a class="app-logo" href="index.html">
+        <span class="app-logo-mark"><svg class="icon" aria-hidden="true"><use href="#logo"/></svg></span>
+        <span class="app-logo-name">Спринт</span>
+      </a>
+
+      <nav class="app-nav" aria-label="Основная навигация">
+        <ul class="app-nav-list">
+          <li>
+            <a class="app-nav-link" href="index.html">
+              <svg class="icon" aria-hidden="true"><use href="#board"/></svg>
+              <span class="app-nav-label">Доска</span>
+            </a>
+          </li>
+          <li>
+            <a class="app-nav-link app-nav-link-create app-nav-link-current" href="task-new.html" aria-current="page">
+              <svg class="icon" aria-hidden="true"><use href="#plus"/></svg>
+              <span class="app-nav-label">Новая задача</span>
+              <span class="app-nav-label-short">Создать</span>
+            </a>
+          </li>
+          <li>
+            <a class="app-nav-link" href="team.html">
+              <svg class="icon" aria-hidden="true"><use href="#team"/></svg>
+              <span class="app-nav-label">Команда</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <section class="sprint-summary">
+        <h2 class="sprint-summary-caption">Текущий спринт</h2>
+        <p class="sprint-summary-name">Спринт 14</p>
+        <p class="sprint-summary-dates">15 — 28 сентября</p>
+      </section>
+
+      <div class="current-user">
+        <span class="avatar avatar-large avatar-anya">АК</span>
+        <p class="current-user-info">
+          <span class="current-user-name">Аня Ковалёва</span>
+          <span class="current-user-role">Администратор</span>
+        </p>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      <header class="page-header page-header-flow">
+        <a class="icon-button page-header-back" href="index.html" aria-label="Закрыть"><svg class="icon" aria-hidden="true"><use href="#close"/></svg></a>
+        <div class="page-header-heading">
+          <nav class="breadcrumbs" aria-label="Навигационная цепочка">
+            <ol class="breadcrumbs-list">
+              <li class="breadcrumbs-item"><a class="breadcrumbs-link" href="index.html">Доска</a></li>
+              <li class="breadcrumbs-item" aria-current="page">Новая задача</li>
+            </ol>
+          </nav>
+          <h1 class="page-title">Новая задача</h1>
+        </div>
+        <button class="button button-text page-header-mobile-action" type="reset" form="task-form">Очистить</button>
+      </header>
+
+      <div class="task-editor">
+        <form class="task-form" id="task-form" action="index.html">
+          <div class="form-field">
+            <div class="form-field-head">
+              <label class="form-field-label" for="title">Название <span class="form-field-required">*</span></label>
+              <span class="form-field-hint">0 / 80</span>
+            </div>
+            <input class="input" id="title" name="title" required minlength="3" maxlength="80" placeholder="Например, «Сверстать экран команды»">
+            <p class="form-field-error">Добавьте название — от 3 до 80 символов</p>
+          </div>
+
+          <div class="form-field">
+            <label class="form-field-label" for="description">Описание</label>
+            <textarea class="input input-multiline" id="description" name="description" rows="4" placeholder="Что нужно сделать и как понять, что готово"></textarea>
+          </div>
+
+          <div class="task-form-row">
+            <div class="form-field">
+              <label class="form-field-label" for="status">Статус</label>
+              <select class="input select" id="status" name="status">
+                <option value="backlog" selected>Бэклог</option>
+                <option value="progress">В работе</option>
+                <option value="review">На ревью</option>
+                <option value="done">Готово</option>
+              </select>
+            </div>
+
+            <fieldset class="form-field priority-picker">
+              <legend class="form-field-label">Приоритет</legend>
+              <div class="priority-picker-options">
+                <label class="priority-picker-option">
+                  <input class="visually-hidden" type="radio" name="priority" value="high">
+                  <span class="priority-picker-dot priority-picker-dot-high"></span>
+                  Высокий
+                </label>
+                <label class="priority-picker-option">
+                  <input class="visually-hidden" type="radio" name="priority" value="medium" checked>
+                  <span class="priority-picker-dot priority-picker-dot-medium"></span>
+                  Средний
+                </label>
+                <label class="priority-picker-option">
+                  <input class="visually-hidden" type="radio" name="priority" value="low">
+                  <span class="priority-picker-dot priority-picker-dot-low"></span>
+                  Низкий
+                </label>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="task-form-row">
+            <div class="form-field">
+              <label class="form-field-label" for="assignee">Исполнитель</label>
+              <select class="input select" id="assignee" name="assignee">
+                <option value="" selected>Выберите участника</option>
+                <option value="anya">Аня Ковалёва</option>
+                <option value="misha">Миша Орлов</option>
+                <option value="lev">Лёва Гринберг</option>
+                <option value="katya">Катя Петрова</option>
+                <option value="dima">Дима Соколов</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label class="form-field-label" for="due">Дедлайн</label>
+              <input class="input" id="due" name="due" type="date" min="2026-09-23">
+              <p class="form-field-error">Дедлайн не может быть в прошлом</p>
+            </div>
+          </div>
+
+          <fieldset class="tag-picker">
+            <legend class="form-field-label">Теги</legend>
+            <div class="tag-picker-options">
+              <label class="tag-picker-option"><input class="visually-hidden" type="checkbox" name="tags" value="Фронтенд"> Фронтенд</label>
+              <label class="tag-picker-option"><input class="visually-hidden" type="checkbox" name="tags" value="Дизайн"> Дизайн</label>
+              <label class="tag-picker-option"><input class="visually-hidden" type="checkbox" name="tags" value="Инфра"> Инфра</label>
+              <label class="tag-picker-option"><input class="visually-hidden" type="checkbox" name="tags" value="Баг"> Баг</label>
+              <label class="tag-picker-option"><input class="visually-hidden" type="checkbox" name="tags" value="Фича"> Фича</label>
+              <label class="tag-picker-option"><input class="visually-hidden" type="checkbox" name="tags" value="Документация"> Документация</label>
+            </div>
+            <div class="tag-picker-new">
+              <input class="input" placeholder="Новый тег" aria-label="Новый тег">
+              <button class="button button-secondary" type="button">Добавить</button>
+            </div>
+          </fieldset>
+
+          <div class="task-form-actions">
+            <button class="button button-secondary task-form-reset" type="reset">Очистить</button>
+            <a class="button button-secondary task-form-cancel" href="index.html">Отмена</a>
+            <button class="button button-primary task-form-submit">Создать задачу</button>
+          </div>
+        </form>
+
+        <aside class="task-preview">
+          <h2 class="task-preview-caption">Так задача появится на доске</h2>
+          <article class="task-card task-preview-card">
+            <ul class="task-card-labels">
+              <li class="priority-badge priority-badge-medium">Средний</li>
+            </ul>
+            <h3 class="task-card-title task-preview-title-empty">Название задачи</h3>
+            <footer class="task-card-footer">
+              <span class="task-card-due"><svg class="icon icon-sm" aria-hidden="true"><use href="#calendar"/></svg>Без срока</span>
+              <span class="avatar avatar-unassigned task-card-assignee" title="Не назначен">—</span>
+            </footer>
+          </article>
+          <p class="task-preview-column"><span class="status-dot status-dot-backlog"></span> Колонка «Бэклог»</p>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>
