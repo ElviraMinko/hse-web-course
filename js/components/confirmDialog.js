@@ -1,16 +1,8 @@
-
-
 import { el } from '../utils/dom.js';
 
-let dialogCount = 0;
-
 export function confirmAction({ title, text, confirmLabel = 'Удалить' }) {
-  dialogCount += 1;
-  const titleId = `confirm-title-${dialogCount}`;
-  const textId = `confirm-text-${dialogCount}`;
-
   return new Promise((resolve) => {
-    const dialog = el('dialog', { className: 'modal', 'aria-labelledby': titleId, 'aria-describedby': textId });
+    const dialog = el('dialog', { className: 'modal', 'aria-label': title });
     const close = (result) => dialog.close(result);
 
     dialog.append(
@@ -19,8 +11,8 @@ export function confirmAction({ title, text, confirmLabel = 'Удалить' }) 
         'div',
         { className: 'modal-panel' },
         el('span', { className: 'modal-handle' }),
-        el('h2', { className: 'modal-title', id: titleId }, title),
-        el('p', { className: 'modal-text', id: textId }, text),
+        el('h2', { className: 'modal-title' }, title),
+        el('p', { className: 'modal-text' }, text),
         el(
           'div',
           { className: 'modal-actions' },

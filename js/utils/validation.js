@@ -1,5 +1,3 @@
-
-
 import { TASK_TITLE_MIN, TASK_TITLE_MAX } from '../data/dictionaries.js';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -8,13 +6,9 @@ export function validateTask(values, { today, allowedDue = '' }) {
   const errors = {};
   const title = values.title.trim();
 
-  if (!title) {
-    errors.title = 'Добавьте название задачи';
-  } else if (title.length < TASK_TITLE_MIN) {
-    errors.title = `Слишком коротко — хотя бы ${TASK_TITLE_MIN} символа`;
-  } else if (title.length > TASK_TITLE_MAX) {
-    errors.title = `Название не длиннее ${TASK_TITLE_MAX} символов`;
-  }
+  if (!title) errors.title = 'Добавьте название задачи';
+  else if (title.length < TASK_TITLE_MIN) errors.title = `Слишком коротко — хотя бы ${TASK_TITLE_MIN} символа`;
+  else if (title.length > TASK_TITLE_MAX) errors.title = `Название не длиннее ${TASK_TITLE_MAX} символов`;
 
   if (values.due && values.due < today && values.due !== allowedDue) {
     errors.due = 'Дедлайн не может быть в прошлом';
@@ -32,24 +26,44 @@ export function validateInvite(values, members) {
 
   if (!email) errors.email = 'Введите email';
   else if (!EMAIL_PATTERN.test(email)) errors.email = 'Похоже, в адресе опечатка';
-  else if (members.some((member) => member.email.toLowerCase() === email)) {
-    errors.email = 'Этот человек уже в команде';
-  }
+  else if (members.some((member) => member.email.toLowerCase() === email)) errors.email = 'Этот человек уже в команде';
+
   return errors;
 }
 
-export function showFieldErrors(form, errors, fieldNames) {
+function showFieldErrors(form, errors, fieldNames) {
   let firstInvalid = null;
   for (const name of fieldNames) {
     const input = form.elements.namedItem(name);
-    const field = input.closest('.form-field');
     const message = errors[name];
-    const errorNode = document.getElementById(input.getAttribute('aria-describedby'));
-
-    field.classList.toggle('form-field-invalid', Boolean(message));
+    input.closest('.form-field').classList.toggle('form-field-invalid', Boolean(message));
     input.setAttribute('aria-invalid', String(Boolean(message)));
-    if (message && errorNode) errorNode.textContent = message;
-    if (message && !firstInvalid) firstInvalid = input;
+    if (message) {
+      document.getElementById(input.getAttribute('aria-describedby')).textContent = message;
+      firstInvalid ??= input;
+    }
   }
   return firstInvalid;
+}
+
+export function setupFormValidation(form, fieldNames, getErrors) {
+  let wasSubmitted = false;
+  const check = () => showFieldErrors(form, getErrors(), fieldNames);
+
+  form.addEventListener('input', () => {
+    if (wasSubmitted) check();
+  });
+
+  return {
+    validate() {
+      wasSubmitted = true;
+      const firstInvalid = check();
+      firstInvalid?.focus();
+      return !firstInvalid;
+    },
+    clear() {
+      wasSubmitted = false;
+      showFieldErrors(form, {}, fieldNames);
+    },
+  };
 }

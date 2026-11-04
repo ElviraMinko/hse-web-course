@@ -19,6 +19,10 @@
     <symbol id="invite" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></symbol>
     <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
     <symbol id="calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+    <symbol id="bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+    <symbol id="download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol>
+    <symbol id="upload" viewBox="0 0 24 24"><path d="M12 21V9M7 14l5-5 5 5M5 3h14"/></symbol>
+    <symbol id="close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
   </svg>
 
   <div class="app">
@@ -74,6 +78,7 @@
           </p>
           <h1 class="page-title">Доска задач</h1>
         </div>
+        <button class="icon-button board-header-reminders" id="board-reminders" type="button" aria-pressed="false" aria-label="Напоминания о дедлайнах"><svg class="icon" aria-hidden="true"><use href="#bell"/></svg></button>
         <button class="icon-button board-header-search-toggle" id="board-search-toggle" type="button" aria-label="Поиск" aria-controls="board-search" aria-expanded="false"><svg class="icon" aria-hidden="true"><use href="#search"/></svg></button>
         <div class="board-header-actions">
           <div class="sprint-progress">
@@ -99,6 +104,7 @@
           <label class="filter-chips-option"><input class="visually-hidden" type="radio" name="filter" value="mine"> Мои</label>
           <label class="filter-chips-option"><input class="visually-hidden" type="radio" name="filter" value="high"> Высокий приоритет</label>
         </fieldset>
+        <button class="button button-quiet board-toolbar-transfer" id="board-transfer" type="button"><svg class="icon icon-md" aria-hidden="true"><use href="#download"/></svg> Экспорт и импорт</button>
         <button class="button button-quiet board-toolbar-reset" id="board-reset" type="button">Сбросить данные</button>
       </div>
 

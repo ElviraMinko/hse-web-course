@@ -1,27 +1,23 @@
 :root {
-  /* поверхности */
-  --color-page: #f4f2ec;
+    --color-page: #f4f2ec;
   --color-surface: #ffffff;
   --color-surface-muted: #f7f6f1;
   --color-surface-sunken: #ecebe4;
   --color-sidebar: #fbfaf7;
   --color-overlay: rgba(28, 27, 34, 0.42);
 
-  /* линии */
-  --color-border: #e4e0d5;
+    --color-border: #e4e0d5;
   --color-border-strong: #dcd8cc;
   --color-border-hover: #b9b4a5;
 
-  /* текст */
-  --color-text: #1c1b22;
+    --color-text: #1c1b22;
   --color-text-body: #2d2b36;
   --color-text-secondary: #4a4858;
   --color-text-muted: #6b6878;
   --color-text-placeholder: #8a8697;
   --color-text-inverse: #ffffff;
 
-  /* состояния */
-  --color-accent: #4338ca;
+    --color-accent: #4338ca;
   --color-accent-hover: #3730a3;
   --color-accent-soft: #eef0ff;
   --color-danger: #b42318;
@@ -29,14 +25,12 @@
   --color-success: #15803d;
   --color-success-soft: #dcfce7;
 
-  /* статусы задач */
-  --status-backlog: #8a8697;
+    --status-backlog: #8a8697;
   --status-progress: #4338ca;
   --status-review: #c2410c;
   --status-done: #15803d;
 
-  /* приоритеты */
-  --priority-high-bg: #fde2d6;
+    --priority-high-bg: #fde2d6;
   --priority-high-fg: #9a3412;
   --priority-high-dot: #c2410c;
   --priority-medium-bg: #fef3c7;
@@ -46,15 +40,14 @@
   --priority-low-fg: #4a4858;
   --priority-low-dot: #8a8697;
 
-  /* цвета участников (аватары) */
-  --avatar-indigo-bg: #e0e7ff;  --avatar-indigo-fg: #3730a3;
+    --avatar-indigo-bg: #e0e7ff;  --avatar-indigo-fg: #3730a3;
   --avatar-coral-bg: #fde2d6;   --avatar-coral-fg: #9a3412;
   --avatar-green-bg: #dcfce7;   --avatar-green-fg: #166534;
   --avatar-amber-bg: #fef3c7;   --avatar-amber-fg: #854d0e;
   --avatar-violet-bg: #f3e8ff;  --avatar-violet-fg: #6b21a8;
   --avatar-cyan-bg: #cffafe;    --avatar-cyan-fg: #155e75;
 
-  --font-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "Unbounded", "Manrope", system-ui, sans-serif;
   --text-xs: 12px;
   --text-sm: 13px;
@@ -63,8 +56,7 @@
   --text-lg: 16px;
   --text-title: 30px;
 
-  /* размеры */
-  --sidebar-width: 248px;
+    --sidebar-width: 248px;
   --rail-width: 84px;
   --tab-bar-height: 72px;
   --control-height: 44px;
@@ -78,8 +70,7 @@
   --space-8: 32px;
   --space-10: 40px;
 
-  /* скругления и тени */
-  --radius-sm: 9px;
+    --radius-sm: 9px;
   --radius-md: 12px;
   --radius-lg: 14px;
   --radius-xl: 18px;
@@ -161,6 +152,10 @@ svg {
 :focus-visible {
   outline: var(--focus-outline);
   outline-offset: 2px;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 .visually-hidden {
@@ -397,7 +392,6 @@ svg {
   color: var(--color-text-muted);
 }
 
-/* кнопки */
 .button {
   display: inline-flex;
   align-items: center;
@@ -504,17 +498,6 @@ svg {
   color: var(--color-danger);
 }
 
-.icon-button-accent {
-  background: var(--color-accent);
-  color: var(--color-text-inverse);
-}
-
-.icon-button-accent:hover {
-  background: var(--color-accent-hover);
-  color: var(--color-text-inverse);
-}
-
-/* поля ввода */
 .input {
   width: 100%;
   height: var(--control-height);
@@ -569,7 +552,6 @@ html:not(.js) .input:user-invalid,
   cursor: pointer;
 }
 
-/* поле формы */
 .form-field {
   display: flex;
   flex-direction: column;
@@ -610,7 +592,6 @@ html:not(.js) .form-field:has(:user-invalid) .form-field-error,
   display: block;
 }
 
-/* бейджи */
 .priority-badge,
 .task-tag {
   display: inline-flex;
@@ -679,7 +660,6 @@ html:not(.js) .form-field:has(:user-invalid) .form-field-error,
   font-weight: 700;
 }
 
-/* аватары участников */
 .avatar {
   display: inline-flex;
   align-items: center;
@@ -703,7 +683,6 @@ html:not(.js) .form-field:has(:user-invalid) .form-field-error,
 .avatar-cyan { background: var(--avatar-cyan-bg); color: var(--avatar-cyan-fg); }
 .avatar-unassigned { background: var(--color-surface-sunken); color: var(--color-text-muted); }
 
-/* фильтры */
 .filter-chips {
   display: flex;
   gap: var(--space-2);
@@ -742,7 +721,6 @@ html:not(.js) .form-field:has(:user-invalid) .form-field-error,
   outline-offset: 2px;
 }
 
-/* карточка */
 .panel {
   display: flex;
   flex-direction: column;
@@ -852,7 +830,7 @@ html:not(.js) .form-field:has(:user-invalid) .form-field-error,
   padding-left: 42px;
 }
 
-.board-toolbar-reset {
+.board-toolbar-transfer {
   margin-left: auto;
 }
 
@@ -1001,7 +979,6 @@ html:not(.js) .form-field:has(:user-invalid) .form-field-error,
   margin-left: auto;
 }
 
-/* выбор статуса */
 .status-select {
   appearance: none;
   height: 32px;
@@ -1026,7 +1003,6 @@ html:not(.js) .form-field:has(:user-invalid) .form-field-error,
   border-color: var(--color-accent);
   box-shadow: var(--focus-ring);
 }
-
 
 .task-editor {
   display: flex;
@@ -1406,17 +1382,12 @@ html:not(.js) .form-field:has(:user-invalid) .form-field-error,
   pointer-events: none;
 }
 
-.team-header-invite-icon {
-  display: inline-flex;
-}
-
 .team-header-summary,
 .team-member-tasks-word,
 .team-table-label-short {
   display: none;
 }
 
-/* Кнопка приглашения видна только администратору */
 .page:not(.page-role-admin) .team-header-invite {
   display: none;
 }
@@ -2015,6 +1986,7 @@ html:has(.modal[open]) {
   }
 
   .board-search,
+  .board-toolbar-transfer,
   .board-toolbar-reset {
     display: none;
   }
@@ -2235,6 +2207,7 @@ html:has(.modal[open]) {
   }
 
   .task-header-created,
+  .task-header-share,
   .task-header-edit {
     display: none;
   }
@@ -2827,6 +2800,180 @@ html:has(.modal[open]) {
   .empty-state {
     margin-top: var(--space-5);
     padding: var(--space-6);
+  }
+}
+
+.board-header-reminders {
+  width: var(--control-height);
+  height: var(--control-height);
+  margin-left: auto;
+  border-color: var(--color-border-strong);
+  background: var(--color-surface);
+}
+
+.board-header-reminders[aria-pressed="true"] {
+  border-color: transparent;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.board-header-reminders[aria-pressed="true"]:hover {
+  background: #e0e3ff;
+  color: var(--color-accent-hover);
+}
+
+.task-card[draggable="true"] {
+  cursor: grab;
+}
+
+.task-card-dragging {
+  opacity: 0.4;
+}
+
+.board-column {
+  transition: background var(--transition), box-shadow var(--transition);
+}
+
+.board-column-drop-target {
+  background: var(--color-accent-soft);
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+.speech-field {
+  position: relative;
+  width: 100%;
+}
+
+.speech-field .input {
+  padding-right: 52px;
+}
+
+.speech-button {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-top: -18px;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+
+.speech-field-multiline .speech-button {
+  top: 6px;
+  margin-top: 0;
+}
+
+.speech-button:hover {
+  background: var(--color-surface-sunken);
+  color: var(--color-text);
+}
+
+.speech-button-unavailable {
+  opacity: 0.45;
+}
+
+.speech-button-recording,
+.speech-button-recording:hover {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  animation: speech-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes speech-pulse {
+  50% {
+    box-shadow: 0 0 0 5px rgba(180, 35, 24, 0.14);
+  }
+}
+
+.transfer-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.transfer-section-title {
+  font-size: var(--text-md);
+  font-weight: 800;
+}
+
+.transfer-export {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.file-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-6) var(--space-4);
+  border: 1.5px dashed #c4bfb1;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+  font-size: var(--text-md);
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.file-drop:hover,
+.file-drop-active {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-hover);
+}
+
+.file-drop:has(:focus-visible) {
+  outline: var(--focus-outline);
+  outline-offset: 2px;
+}
+
+.file-drop-hint {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.transfer-error {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--color-danger);
+}
+
+.transfer-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-page);
+  font-size: var(--text-md);
+  line-height: 1.5;
+}
+
+.transfer-preview .modal-actions {
+  padding-top: 0;
+}
+
+@media (max-width: 720px) {
+  .board-header-reminders {
+    margin-left: 0;
+    border-color: transparent;
+    background: transparent;
+    color: var(--color-text);
   }
 }
 

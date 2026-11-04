@@ -1,5 +1,3 @@
-
-
 import { STATUSES, getPriority, getStatus } from '../data/dictionaries.js';
 import { addComment, getComments, getCurrentUser, getMember, getTask, getTasks, setTaskStatus } from '../store.js';
 import { el, getQueryParam, qs, replaceContent } from '../utils/dom.js';
@@ -8,13 +6,14 @@ import { getShortName } from '../utils/text.js';
 import { createAvatar } from '../components/avatar.js';
 import { isOverdue } from '../components/taskCard.js';
 import { showToast } from '../components/toast.js';
+import { shareLink } from '../features/share.js';
+import { attachDictation, stopDictation } from '../features/speechInput.js';
 
 const FORMER_MEMBER = 'Бывший участник';
 
 function findTask() {
   const id = getQueryParam('id');
   if (id) return getTask(id);
-
   const first = getTasks()[0] ?? null;
   if (first) window.history.replaceState(null, '', `?id=${first.id}`);
   return first;
@@ -46,9 +45,7 @@ function createPriorityBadge(task, { withSuffix = false } = {}) {
 
 const createTag = (tag) => el('span', { className: 'task-tag task-tag-large' }, tag);
 
-function createDate(iso) {
-  return el('time', { datetime: iso }, formatLongDate(iso));
-}
+const createDate = (iso) => el('time', { datetime: iso }, formatLongDate(iso));
 
 function renderHeader(task) {
   document.title = `${task.title} — Спринт`;
@@ -166,6 +163,7 @@ export function init() {
 
   commentForm.addEventListener('submit', (event) => {
     event.preventDefault();
+    stopDictation();
     const text = commentText.value.trim();
     if (!text) {
       commentText.focus();
@@ -178,12 +176,24 @@ export function init() {
   });
 
   commentText.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
-      event.preventDefault();
-      commentForm.requestSubmit();
-    }
+    if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
+    event.preventDefault();
+    commentForm.requestSubmit();
   });
 
+  async function share(button) {
+    const url = new URL(`task.html?id=${task.id}`, window.location.href).href;
+    button.disabled = true;
+    const result = await shareLink({ title: `${task.code}: ${task.title}`, text: task.title, url });
+    button.disabled = false;
+    if (result === 'copied') showToast('Ссылка на задачу скопирована');
+    else if (result === 'failed') showToast(`Не удалось скопировать — ссылка: ${url}`);
+  }
+  for (const button of [qs('#task-share'), qs('#task-share-mobile')]) {
+    button.addEventListener('click', () => share(button));
+  }
+
+  attachDictation(commentText, 'комментарий');
   qs('#comment-form-avatar').replaceWith(
     createAvatar(getCurrentUser(), { size: 'large', className: 'comment-form-avatar' }),
   );

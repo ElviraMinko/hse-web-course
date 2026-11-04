@@ -1,5 +1,3 @@
-
-
 export const STATUSES = [
   { id: 'backlog', label: 'Бэклог' },
   { id: 'progress', label: 'В работе' },
@@ -26,14 +24,8 @@ export const AVATAR_TONES = ['indigo', 'coral', 'green', 'amber', 'violet', 'cya
 export const TASK_TITLE_MIN = 3;
 export const TASK_TITLE_MAX = 80;
 
-export function getStatus(id) {
-  return STATUSES.find((status) => status.id === id) ?? STATUSES[0];
-}
+export const isKnown = (list, id) => list.some((item) => item.id === id);
 
-export function getPriority(id) {
-  return PRIORITIES.find((priority) => priority.id === id) ?? PRIORITIES[1];
-}
-
-export function getRole(id) {
-  return ROLES.find((role) => role.id === id) ?? ROLES[1];
-}
+export const getStatus = (id) => STATUSES.find((status) => status.id === id) ?? STATUSES[0];
+export const getPriority = (id) => PRIORITIES.find((priority) => priority.id === id) ?? PRIORITIES[1];
+export const getRole = (id) => ROLES.find((role) => role.id === id) ?? ROLES[1];

@@ -1,13 +1,12 @@
-
-
 import { ROLES, getRole } from '../data/dictionaries.js';
 import {
   countActiveTasks, getMember, getMembers, getPreference, getTasks,
   inviteMember, isCurrentUserAdmin, removeMember, setMemberRole, setPreference,
 } from '../store.js';
 import { checkRadio, el, icon, qs, qsa, replaceContent } from '../utils/dom.js';
-import { MEMBER_WORDS, TASK_WORDS, formatLastSeen, pluralize } from '../utils/text.js';
-import { showFieldErrors, validateInvite } from '../utils/validation.js';
+import { formatLastSeen } from '../utils/date.js';
+import { MEMBER_WORDS, TASK_WORDS, countLabel, pluralize } from '../utils/text.js';
+import { setupFormValidation, validateInvite } from '../utils/validation.js';
 import { createAvatar } from '../components/avatar.js';
 import { confirmAction } from '../components/confirmDialog.js';
 import { showToast } from '../components/toast.js';
@@ -17,7 +16,6 @@ const SORTERS = {
   tasks: (a, b) => countActiveTasks(a.id) - countActiveTasks(b.id) || a.name.localeCompare(b.name, 'ru'),
 };
 const DEFAULT_DIRECTION = { name: 'asc', tasks: 'desc' };
-const INVITE_FIELDS = ['name', 'email'];
 
 function createMemberRow(member) {
   const tasks = countActiveTasks(member.id);
@@ -110,7 +108,7 @@ export function init() {
     qs('#team-stat-admins').textContent = members.filter((member) => member.role === 'admin').length;
     qs('#team-stat-active').textContent = activeTasks;
     qs('#team-summary').textContent =
-      `${members.length} ${pluralize(members.length, MEMBER_WORDS)} · ${activeTasks} ${pluralize(activeTasks, TASK_WORDS)} в работе`;
+      `${countLabel(members.length, MEMBER_WORDS)} · ${countLabel(activeTasks, TASK_WORDS)} в работе`;
   }
 
   function renderSortState() {
@@ -135,7 +133,6 @@ export function init() {
     renderSortState();
   }
 
-
   searchInput.addEventListener('input', () => {
     query = searchInput.value.trim().toLowerCase();
     render();
@@ -157,7 +154,6 @@ export function init() {
     });
   }
 
-
   tableBody.addEventListener('change', (event) => {
     const select = event.target.closest('[data-role-for]');
     if (!select) return;
@@ -176,7 +172,7 @@ export function init() {
     const confirmed = await confirmAction({
       title: 'Удалить из команды?',
       text: `${member.name} потеряет доступ к доске.` + (tasks
-        ? ` ${tasks} ${pluralize(tasks, TASK_WORDS)} останутся без исполнителя.`
+        ? ` ${countLabel(tasks, TASK_WORDS)} останутся без исполнителя.`
         : ''),
     });
     if (!confirmed) return;
@@ -191,18 +187,16 @@ export function init() {
   render();
 }
 
-
 function setupInviteDialog(onInvited) {
   const dialog = qs('#invite-dialog');
   const form = qs('#invite-form');
   const openButton = qs('#team-invite-open');
-  let wasSubmitted = false;
 
   const readValues = () => ({
     name: form.elements.namedItem('name').value,
     email: form.elements.namedItem('email').value,
   });
-  const validate = () => showFieldErrors(form, validateInvite(readValues(), getMembers()), INVITE_FIELDS);
+  const validation = setupFormValidation(form, ['name', 'email'], () => validateInvite(readValues(), getMembers()));
 
   function open() {
     if (!isCurrentUserAdmin() || dialog.open) return;
@@ -223,22 +217,12 @@ function setupInviteDialog(onInvited) {
 
   dialog.addEventListener('close', () => {
     form.reset();
-    wasSubmitted = false;
-    showFieldErrors(form, {}, INVITE_FIELDS);
-  });
-
-  form.addEventListener('input', () => {
-    if (wasSubmitted) validate();
+    validation.clear();
   });
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    wasSubmitted = true;
-    const firstInvalid = validate();
-    if (firstInvalid) {
-      firstInvalid.focus();
-      return;
-    }
+    if (!validation.validate()) return;
     const member = inviteMember(readValues());
     dialog.close();
     onInvited();

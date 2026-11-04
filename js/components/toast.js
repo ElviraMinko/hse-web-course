@@ -1,5 +1,3 @@
-
-
 import { el } from '../utils/dom.js';
 
 const VISIBLE_MS = 3200;
@@ -7,36 +5,36 @@ const QUEUE_KEY = 'sprint-tracker:toast';
 let region = null;
 
 export function showToast(message) {
-  if (!region) {
-    region = el('div', { className: 'toast-region', role: 'status', 'aria-live': 'polite' });
-    document.body.append(region);
-  }
+  region ??= document.body.appendChild(el('div', { className: 'toast-region', role: 'status', 'aria-live': 'polite' }));
   const toast = el('p', { className: 'toast' }, message);
   region.append(toast);
 
   setTimeout(() => {
     toast.classList.add('toast-leaving');
-    toast.addEventListener('transitionend', () => toast.remove(), { once: true });
-    setTimeout(() => toast.remove(), 400);
+    setTimeout(() => toast.remove(), 250);
   }, VISIBLE_MS);
 }
 
 export function queueToast(message) {
   try {
     sessionStorage.setItem(QUEUE_KEY, message);
+    return true;
   } catch {
+    return false;
+  }
+}
 
+function takeQueuedMessage() {
+  try {
+    const message = sessionStorage.getItem(QUEUE_KEY);
+    sessionStorage.removeItem(QUEUE_KEY);
+    return message;
+  } catch {
+    return null;
   }
 }
 
 export function showQueuedToast() {
-  try {
-    const message = sessionStorage.getItem(QUEUE_KEY);
-    if (message) {
-      sessionStorage.removeItem(QUEUE_KEY);
-      showToast(message);
-    }
-  } catch {
-
-  }
+  const message = takeQueuedMessage();
+  if (message) showToast(message);
 }

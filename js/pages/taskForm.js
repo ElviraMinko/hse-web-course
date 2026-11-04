@@ -1,13 +1,12 @@
-
-
 import { TASK_TITLE_MAX, getStatus } from '../data/dictionaries.js';
 import { addTag, createTask, getCurrentUser, getMembers, getTags, getTask, updateTask } from '../store.js';
 import { checkRadio, el, getQueryParam, qs, replaceContent } from '../utils/dom.js';
 import { todayISO } from '../utils/date.js';
-import { showFieldErrors, validateTask } from '../utils/validation.js';
+import { setupFormValidation, validateTask } from '../utils/validation.js';
 import { setCurrentNavItem } from '../components/layout.js';
 import { renderTaskCard } from '../components/taskCard.js';
 import { queueToast, showToast } from '../components/toast.js';
+import { attachDictation, stopDictation } from '../features/speechInput.js';
 
 const EMPTY_VALUES = {
   title: '',
@@ -19,8 +18,6 @@ const EMPTY_VALUES = {
   tags: [],
 };
 
-const VALIDATED_FIELDS = ['title', 'due'];
-
 export function init() {
   const form = qs('#task-form');
   const fields = form.elements;
@@ -30,16 +27,10 @@ export function init() {
 
   const requestedId = getQueryParam('id');
   const task = requestedId ? getTask(requestedId) : null;
-  const initialValues = task
-    ? { ...EMPTY_VALUES, ...task, tags: [...task.tags] }
-    : { ...EMPTY_VALUES, status: getStatus(getQueryParam('status')).id };
+  const initialValues = task ? { ...EMPTY_VALUES, ...task, tags: [...task.tags] } : EMPTY_VALUES;
   const today = todayISO();
-  let wasSubmitted = false;
 
-  if (requestedId && !task) {
-    showToast('Задача не найдена — можно создать новую');
-  }
-
+  if (requestedId && !task) showToast('Задача не найдена — можно создать новую');
 
   function readValues() {
     const data = new FormData(form);
@@ -53,6 +44,9 @@ export function init() {
       tags: data.getAll('tags'),
     };
   }
+
+  const validation = setupFormValidation(form, ['title', 'due'], () =>
+    validateTask(readValues(), { today, allowedDue: task?.due }));
 
   function fillForm(values) {
     fields.namedItem('title').value = values.title;
@@ -75,7 +69,6 @@ export function init() {
   }
 
   function renderTagOptions(selectedTags) {
-
     const allTags = [...new Set([...getTags(), ...selectedTags])];
     replaceContent(
       tagOptions,
@@ -88,15 +81,12 @@ export function init() {
     );
   }
 
-
-  function updateCounter() {
+  function refresh() {
     qs('#title-counter').textContent = `${fields.namedItem('title').value.length} / ${TASK_TITLE_MAX}`;
-  }
 
-  function renderPreview() {
     const values = readValues();
-    renderTaskCard(preview, { id: task?.id ?? 'preview', ...values }, { interactive: false });
     const status = getStatus(values.status);
+    renderTaskCard(preview, { id: task?.id ?? 'preview', ...values }, { interactive: false });
     replaceContent(
       qs('#task-preview-column'),
       el('span', { className: `status-dot status-dot-${status.id}` }),
@@ -104,33 +94,16 @@ export function init() {
     );
   }
 
-  function validate() {
-    const errors = validateTask(readValues(), { today, allowedDue: task?.due });
-    return showFieldErrors(form, errors, VALIDATED_FIELDS);
-  }
-
-  function refresh() {
-    updateCounter();
-    renderPreview();
-
-    if (wasSubmitted) validate();
-  }
-
   function addCustomTag() {
     const name = newTagInput.value.trim();
-    if (!name) {
-      newTagInput.focus();
-      return;
+    if (name) {
+      const selected = new Set(readValues().tags).add(addTag(name));
+      renderTagOptions([...selected]);
+      newTagInput.value = '';
+      refresh();
     }
-    const tag = addTag(name);
-    const selected = new Set(readValues().tags);
-    selected.add(tag);
-    renderTagOptions([...selected]);
-    newTagInput.value = '';
     newTagInput.focus();
-    renderPreview();
   }
-
 
   function setupEditMode() {
     const taskUrl = `task.html?id=${task.id}`;
@@ -151,27 +124,20 @@ export function init() {
     setCurrentNavItem('index.html');
   }
 
-
   form.addEventListener('input', refresh);
   form.addEventListener('change', refresh);
 
   form.addEventListener('reset', (event) => {
     event.preventDefault();
     fillForm(initialValues);
-    wasSubmitted = false;
-    showFieldErrors(form, {}, VALIDATED_FIELDS);
-    updateCounter();
-    renderPreview();
+    validation.clear();
+    refresh();
   });
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    wasSubmitted = true;
-    const firstInvalid = validate();
-    if (firstInvalid) {
-      firstInvalid.focus();
-      return;
-    }
+    stopDictation();
+    if (!validation.validate()) return;
 
     const values = readValues();
     const saved = task ? updateTask(task.id, values) : createTask(values);
@@ -180,19 +146,17 @@ export function init() {
   });
 
   newTagInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      addCustomTag();
-    }
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    addCustomTag();
   });
   qs('#new-tag-button').addEventListener('click', addCustomTag);
 
-
   if (task) setupEditMode();
-
   fields.namedItem('due').min = task?.due && task.due < today ? task.due : today;
   renderAssigneeOptions();
+  attachDictation(fields.namedItem('title'), 'название задачи');
+  attachDictation(fields.namedItem('description'), 'описание задачи');
   fillForm(initialValues);
-  updateCounter();
-  renderPreview();
+  refresh();
 }
