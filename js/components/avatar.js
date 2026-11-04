@@ -5,10 +5,7 @@ export function createAvatar(member, { size, className, withTitle = false, empty
   const classes = ['avatar', size && `avatar-${size}`, member ? `avatar-${member.tone}` : 'avatar-unassigned', className];
   return el(
     'span',
-    {
-      className: classes.filter(Boolean).join(' '),
-      title: withTitle ? (member?.name ?? emptyLabel) : null,
-    },
+    { className: classes.filter(Boolean).join(' '), title: withTitle ? (member?.name ?? emptyLabel) : null },
     member ? getInitials(member.name) : '—',
   );
 }

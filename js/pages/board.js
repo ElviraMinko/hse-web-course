@@ -1,22 +1,26 @@
-
-
-import { STATUSES, getStatus } from '../data/dictionaries.js';
+import { STATUSES, getStatus, isKnown } from '../data/dictionaries.js';
 import {
   getCurrentUser, getPreference, getSprint, getTask, getTasks,
   resetData, setPreference, setTaskStatus,
 } from '../store.js';
-import { checkRadio, el, qs, qsa, replaceContent } from '../utils/dom.js';
+import { checkRadio, el, hasFiles, qs, qsa, replaceContent } from '../utils/dom.js';
 import { formatDateRange } from '../utils/date.js';
 import { confirmAction } from '../components/confirmDialog.js';
 import { renderLayout } from '../components/layout.js';
 import { createTaskCard } from '../components/taskCard.js';
 import { showToast } from '../components/toast.js';
+import { openTransferDialog } from '../components/transferDialog.js';
+import { setupBoardDragAndDrop } from '../features/dragAndDrop.js';
+import { setupReminderToggle } from '../features/deadlineReminders.js';
+import { readUrlParams, writeUrlParams } from '../features/urlState.js';
 
 const FILTERS = {
   all: () => true,
   mine: (task, user) => task.assigneeId === user.id,
   high: (task) => task.priority === 'high',
 };
+
+const SEARCH_URL_DELAY_MS = 300;
 
 function matchesQuery(task, query) {
   if (!query) return true;
@@ -32,6 +36,12 @@ export function init() {
   const tabInputs = qsa('input[name="board-tab"]');
 
   let query = '';
+  let searchUrlTimer = null;
+
+  const dragAndDrop = setupBoardDragAndDrop(qs('.board-columns'), {
+    onMove: (taskId, status) => applyStatus(taskId, status),
+    onAvailabilityChange: () => render(),
+  });
 
   function render() {
     const user = getCurrentUser();
@@ -39,6 +49,7 @@ export function init() {
     const filter = FILTERS[filterId] ?? FILTERS.all;
     const isFiltered = Boolean(query) || filterId !== 'all';
     const visible = getTasks().filter((task) => filter(task, user) && matchesQuery(task, query));
+    const cardOptions = { onStatusChange: handleStatusSelect, draggable: dragAndDrop.isActive() };
 
     for (const status of STATUSES) {
       const column = qs(`[data-column="${status.id}"]`);
@@ -48,7 +59,7 @@ export function init() {
       qs(`[data-tab-count="${status.id}"]`).textContent = tasks.length;
 
       const items = tasks.length
-        ? tasks.map((task) => el('li', {}, createTaskCard(task, { onStatusChange: handleStatusChange })))
+        ? tasks.map((task) => el('li', {}, createTaskCard(task, cardOptions)))
         : el('li', { className: 'board-column-empty' }, isFiltered ? 'Нет задач по этому фильтру' : 'Здесь пока пусто');
       replaceContent(qs('[data-column-list]', column), items);
     }
@@ -70,45 +81,80 @@ export function init() {
     progress.textContent = `${done} из ${tasks.length}`;
   }
 
-  function handleStatusChange(taskId, status) {
-    if (!setTaskStatus(taskId, status)) return;
+  function applyStatus(taskId, status) {
+    if (!setTaskStatus(taskId, status)) return false;
     render();
-
-    document.querySelector(`[data-task-id="${taskId}"] .status-select`)?.focus();
     showToast(`«${getTask(taskId).title}» → ${getStatus(status).label}`);
+    return true;
   }
 
-  function restorePreferences() {
+  function handleStatusSelect(taskId, status) {
+    if (!applyStatus(taskId, status)) return;
+    document.querySelector(`[data-task-id="${taskId}"] .status-select`)?.focus();
+  }
+
+  function setSearchOpen(isOpen) {
+    toolbar.classList.toggle('board-toolbar-search-open', isOpen);
+    searchToggle.setAttribute('aria-expanded', String(isOpen));
+  }
+
+  function applyUrlState({ fromHistory = false } = {}) {
+    const params = readUrlParams(['filter', 'q', 'tab']);
+    if (FILTERS[params.filter]) setPreference('boardFilter', params.filter);
+    else if (fromHistory || !FILTERS[getPreference('boardFilter')]) setPreference('boardFilter', 'all');
+    if (isKnown(STATUSES, params.tab)) setPreference('boardTab', params.tab);
+
+    searchInput.value = params.q ?? '';
+    query = searchInput.value.trim().toLowerCase();
+    setSearchOpen(Boolean(query));
+
     checkRadio(filterField, 'filter', getPreference('boardFilter'));
     checkRadio(document, 'board-tab', getPreference('boardTab'));
+  }
+
+  function syncFilterToUrl({ push }) {
+    const filter = getPreference('boardFilter');
+    writeUrlParams({ filter: filter === 'all' ? null : filter }, { push });
   }
 
   searchInput.addEventListener('input', () => {
     query = searchInput.value.trim().toLowerCase();
     render();
+    clearTimeout(searchUrlTimer);
+    searchUrlTimer = setTimeout(() => writeUrlParams({ q: searchInput.value.trim() }), SEARCH_URL_DELAY_MS);
   });
   searchForm.addEventListener('submit', (event) => event.preventDefault());
 
   searchToggle.addEventListener('click', () => {
-    const isOpen = toolbar.classList.toggle('board-toolbar-search-open');
-    searchToggle.setAttribute('aria-expanded', String(isOpen));
+    const isOpen = !toolbar.classList.contains('board-toolbar-search-open');
+    setSearchOpen(isOpen);
     if (isOpen) {
       searchInput.focus();
     } else if (query) {
       searchInput.value = '';
       query = '';
+      writeUrlParams({ q: null });
       render();
     }
   });
 
   filterField.addEventListener('change', (event) => {
     setPreference('boardFilter', event.target.value);
+    syncFilterToUrl({ push: true });
     render();
   });
 
   for (const input of tabInputs) {
-    input.addEventListener('change', () => setPreference('boardTab', input.value));
+    input.addEventListener('change', () => {
+      setPreference('boardTab', input.value);
+      writeUrlParams({ tab: input.value });
+    });
   }
+
+  window.addEventListener('popstate', () => {
+    applyUrlState({ fromHistory: true });
+    render();
+  });
 
   qs('#board-reset').addEventListener('click', async () => {
     const confirmed = await confirmAction({
@@ -117,15 +163,28 @@ export function init() {
       confirmLabel: 'Сбросить',
     });
     if (!confirmed) return;
-    resetData();
-    query = '';
-    searchInput.value = '';
-    restorePreferences();
+    const saved = resetData();
+    writeUrlParams({ filter: null, q: null, tab: null });
+    applyUrlState();
     renderLayout();
     render();
-    showToast('Данные сброшены');
+    if (saved) showToast('Данные сброшены');
   });
 
-  restorePreferences();
+  qs('#board-transfer').addEventListener('click', () => openTransferDialog());
+
+  window.addEventListener('dragover', (event) => {
+    if (hasFiles(event) && !document.querySelector('dialog[open]')) event.preventDefault();
+  });
+  window.addEventListener('drop', (event) => {
+    if (!hasFiles(event) || document.querySelector('dialog[open]')) return;
+    event.preventDefault();
+    openTransferDialog({ file: event.dataTransfer.files[0] });
+  });
+
+  setupReminderToggle(qs('#board-reminders'));
+
+  applyUrlState();
+  syncFilterToUrl({ push: false });
   render();
 }

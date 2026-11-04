@@ -4,35 +4,26 @@ import { el, icon, replaceContent } from '../utils/dom.js';
 import { formatShortDate, todayISO } from '../utils/date.js';
 import { createAvatar } from './avatar.js';
 
-export function isOverdue(task) {
-  return task.status !== 'done' && Boolean(task.due) && task.due < todayISO();
-}
-
-function createLabels(task) {
-  const priority = getPriority(task.priority);
-  return el(
-    'ul',
-    { className: 'task-card-labels' },
-    el('li', { className: `priority-badge priority-badge-${priority.id}` }, priority.label),
-    task.tags.map((tag) => el('li', { className: 'task-tag' }, tag)),
-  );
-}
+export const isOverdue = (task) => task.status !== 'done' && Boolean(task.due) && task.due < todayISO();
 
 function createDue(task) {
-  if (!task.due) {
-    return el('span', { className: 'task-card-due' }, icon('calendar', 'sm'), 'Без срока');
-  }
+  if (!task.due) return el('span', { className: 'task-card-due' }, icon('calendar', 'sm'), 'Без срока');
   const overdue = isOverdue(task);
   return el(
     'time',
-    {
-      className: overdue ? 'task-card-due task-card-due-overdue' : 'task-card-due',
-      datetime: task.due,
-      title: overdue ? 'Дедлайн прошёл' : null,
-    },
+    { className: overdue ? 'task-card-due task-card-due-overdue' : 'task-card-due', datetime: task.due, title: overdue ? 'Дедлайн прошёл' : null },
     icon('calendar', 'sm'),
     formatShortDate(task.due),
   );
+}
+
+function createTitle(task, interactive, draggable) {
+  const title = task.title.trim();
+  if (!interactive) {
+    return el('h3', { className: title ? 'task-card-title' : 'task-card-title task-preview-title-empty' }, title || 'Название задачи');
+  }
+  const link = el('a', { className: 'task-card-link', href: `task.html?id=${task.id}`, draggable: draggable ? 'false' : null }, title);
+  return el('h3', { className: 'task-card-title' }, link);
 }
 
 function createStatusSelect(task, onStatusChange) {
@@ -48,29 +39,28 @@ function createStatusSelect(task, onStatusChange) {
   );
 }
 
-export function renderTaskCard(article, task, { interactive = true, onStatusChange } = {}) {
-  const assignee = task.assigneeId ? getMember(task.assigneeId) : null;
-  const title = task.title.trim();
-
-  const heading = interactive
-    ? el('h3', { className: 'task-card-title' }, el('a', { className: 'task-card-link', href: `task.html?id=${task.id}` }, title))
-    : el('h3', { className: title ? 'task-card-title' : 'task-card-title task-preview-title-empty' }, title || 'Название задачи');
-
+export function renderTaskCard(article, task, { interactive = true, draggable = false, onStatusChange } = {}) {
+  const priority = getPriority(task.priority);
   article.dataset.taskId = task.id;
+  article.draggable = draggable;
+
   return replaceContent(
     article,
-    createLabels(task),
-    heading,
+    el(
+      'ul',
+      { className: 'task-card-labels' },
+      el('li', { className: `priority-badge priority-badge-${priority.id}` }, priority.label),
+      task.tags.map((tag) => el('li', { className: 'task-tag' }, tag)),
+    ),
+    createTitle(task, interactive, draggable),
     el(
       'footer',
       { className: 'task-card-footer' },
       createDue(task),
-      createAvatar(assignee, { className: 'task-card-assignee', withTitle: true }),
+      createAvatar(getMember(task.assigneeId), { className: 'task-card-assignee', withTitle: true }),
       interactive && createStatusSelect(task, onStatusChange),
     ),
   );
 }
 
-export function createTaskCard(task, options) {
-  return renderTaskCard(el('article', { className: 'task-card' }), task, options);
-}
+export const createTaskCard = (task, options) => renderTaskCard(el('article', { className: 'task-card' }), task, options);

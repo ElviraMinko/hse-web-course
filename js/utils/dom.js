@@ -1,6 +1,5 @@
-
-
 const SVG_NS = 'http://www.w3.org/2000/svg';
+const PROPERTIES = ['className', 'value', 'checked', 'disabled'];
 
 export function el(tag, props = {}, ...children) {
   const node = document.createElement(tag);
@@ -8,13 +7,11 @@ export function el(tag, props = {}, ...children) {
 
   for (const [key, value] of Object.entries(props)) {
     if (value === null || value === undefined || value === false) continue;
-
     if (key.startsWith('on') && typeof value === 'function') {
       node.addEventListener(key.slice(2).toLowerCase(), value);
     } else if (key === 'dataset') {
       Object.assign(node.dataset, value);
-    } else if (['className', 'value', 'checked', 'selected', 'disabled', 'textContent'].includes(key)) {
-
+    } else if (PROPERTIES.includes(key)) {
       node[key] = value;
     } else {
       node.setAttribute(key, value === true ? '' : value);
@@ -23,10 +20,10 @@ export function el(tag, props = {}, ...children) {
   return node;
 }
 
-export function append(parent, children) {
+function append(parent, children) {
   for (const child of children.flat(Infinity)) {
     if (child === null || child === undefined || child === false) continue;
-    parent.append(child instanceof Node ? child : document.createTextNode(String(child)));
+    parent.append(child instanceof Node ? child : String(child));
   }
   return parent;
 }
@@ -52,15 +49,13 @@ export function qs(selector, root = document) {
   return node;
 }
 
-export function qsa(selector, root = document) {
-  return [...root.querySelectorAll(selector)];
-}
+export const qsa = (selector, root = document) => [...root.querySelectorAll(selector)];
 
 export function checkRadio(root, name, value) {
   const input = root.querySelector(`input[type="radio"][name="${name}"][value="${value}"]`);
   if (input) input.checked = true;
 }
 
-export function getQueryParam(name) {
-  return new URLSearchParams(window.location.search).get(name);
-}
+export const getQueryParam = (name) => new URLSearchParams(window.location.search).get(name);
+
+export const hasFiles = (event) => Boolean(event.dataTransfer?.types.includes('Files'));
